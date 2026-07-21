@@ -1,5 +1,3 @@
-# AI School of India — Video 1 Bonus Project
-
 ## Project
 Build a ChatGPT-like chatbot using Python, Streamlit and Ollama.
 
