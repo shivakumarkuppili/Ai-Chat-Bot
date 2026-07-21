@@ -1,18 +1,12 @@
 import requests
 import streamlit as st
 
-# -----------------------------
-# Page Config
-# -----------------------------
 st.set_page_config(
     page_title="AI School of India - Ollama ChatGPT Clone",
     page_icon="🤖",
     layout="centered"
 )
 
-# -----------------------------
-# Custom CSS
-# -----------------------------
 st.markdown("""
 <style>
 .block-container { max-width: 850px; padding-top: 2rem; }
@@ -39,9 +33,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# -----------------------------
-# Header
-# -----------------------------
 st.markdown("""
 <div class="hero-card">
     <div class="brand-title">AI School of India <span class="green">Local AI Chatbot</span></div>
@@ -50,9 +41,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# -----------------------------
-# Ollama Settings
-# -----------------------------
+
 OLLAMA_URL = "http://localhost:11434/api/chat"
 
 with st.sidebar:
@@ -91,9 +80,6 @@ with st.sidebar:
     st.markdown("- Temperature = creativity dial")
     st.markdown("- LLMs are stateless unless we send history")
 
-# -----------------------------
-# Helper Function
-# -----------------------------
 def check_ollama_running():
     try:
         response = requests.get("http://localhost:11434", timeout=3)
@@ -101,44 +87,32 @@ def check_ollama_running():
     except requests.exceptions.RequestException:
         return False
 
-# -----------------------------
-# Session State / Memory
-# -----------------------------
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# -----------------------------
-# Ollama Health Check
-# -----------------------------
 if not check_ollama_running():
     st.error("Ollama is not running. Please open terminal and run: ollama serve")
     st.info("Then pull a model using: ollama pull llama3.2")
     st.stop()
 
-# -----------------------------
-# Show Chat History
-# -----------------------------
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# -----------------------------
-# Chat Input
-# -----------------------------
 user_prompt = st.chat_input("Ask anything... Try Telugu also: 'Generative AI ante enti?'")
 
 if user_prompt:
-    # 1. Display user message
+  
     st.session_state.messages.append({"role": "user", "content": user_prompt})
 
     with st.chat_message("user"):
         st.markdown(user_prompt)
 
-    # 2. Build full messages list for Ollama
+   
     messages_for_ollama = [{"role": "system", "content": system_prompt}]
     messages_for_ollama.extend(st.session_state.messages)
 
-    # 3. Stream assistant response
+   
     with st.chat_message("assistant"):
         response_placeholder = st.empty()
         full_response = ""
@@ -185,5 +159,5 @@ if user_prompt:
             full_response = f"Error: {str(e)}"
             response_placeholder.error(full_response)
 
-    # 4. Store assistant response in memory
+   
     st.session_state.messages.append({"role": "assistant", "content": full_response})
